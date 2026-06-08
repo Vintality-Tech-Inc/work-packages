@@ -362,9 +362,11 @@ def make_work_packages(data_dir: str, wp_config: WPConfig) -> None:
 
         # get changeset between the one received from WP and newly created GPKG
         if os.path.exists(wp_gpkg_input):
-            geodiff.create_changeset(wp_gpkg_input, wp_gpkg_output, wp_changeset_input_to_output)
             if DEBUG_DIFFS:
                 geodiff.list_changes(wp_changeset_input_to_output, wp_changeset_input_to_output_json)
         else:
             # first time this WP is created...
             pass  # TODO: what to do?
+
+        print("STAGE 2 [MASTER -> WP] END")
+

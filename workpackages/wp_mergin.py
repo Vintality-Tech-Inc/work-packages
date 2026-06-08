@@ -69,7 +69,7 @@ def parse_args() -> MerginWPContext:
     parser = argparse.ArgumentParser()
     parser.add_argument("mergin_project")
     parser.add_argument("--cache-dir", nargs="?")
-    parser.add_argument("--max-workers", nargs="?", type=int, default=8)
+    parser.add_argument("--max-workers", nargs="?", type=int, default=1)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-lock", action="store_true")
     params = parser.parse_args()
@@ -262,6 +262,8 @@ def push_data_to_projects(ctx: MerginWPContext, wp_config, wp_new, gpkg_path, ma
 
     def push_work_package(wp):
         wp_name, wp_value, wp_mergin = wp.name, wp.value, wp.mergin_project
+        print(f"Push work package: {wp_name}")
+
         wp_dir = os.path.join(ctx.tmp_dir, "wp-" + wp_name)
         if wp_name in wp_new:
             # we need to create new project
