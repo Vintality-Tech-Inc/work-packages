@@ -222,7 +222,7 @@ def make_work_packages(data_dir: str, wp_config: WPConfig) -> None:
             c.execute("ATTACH ? AS remap", (remap_db_output,))
             c.execute("BEGIN")
             for wp_table in wp_config.wp_tables:
-                remap_table_wp_to_master(c, wp_table.name, wp_name, new_master_fids[wp_table.name])
+                new_master_fids[wp_table.name] = remap_table_wp_to_master(c, wp_table.name, wp_name, new_master_fids[wp_table.name])
             c.execute("COMMIT")
             db.close()
 

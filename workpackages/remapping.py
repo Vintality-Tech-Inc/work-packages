@@ -136,6 +136,15 @@ def remap_table_wp_to_master(cursor, table_name, wp_name, new_master_fid):
         wp_fids_missing.add(row[0])
 
     # 2. insert missing mapped ids (after a feature got added in WP)
+    # Bump new_master_fid past any master_fid already reserved in this remap table.
+    # This guards against cases where a previous run reserved a master_fid (e.g. during
+    # base-only processing with no resulting changeset) but never applied it to master,
+    # so max(master fid) still points below the reserved value.
+    cursor.execute(f"""SELECT max(master_fid) FROM {remap_table}""")
+    max_existing = cursor.fetchone()[0]
+    if max_existing is not None and max_existing >= new_master_fid:
+        new_master_fid = max_existing + 1
+
     for wp_fid in wp_fids_missing:
         cursor.execute(f"""INSERT INTO {remap_table} VALUES (?, ?)""", (new_master_fid, wp_fid))
         new_master_fid += 1
@@ -164,3 +173,5 @@ def remap_table_wp_to_master(cursor, table_name, wp_name, new_master_fid):
             f"""UPDATE {table_name_escaped} SET {pkey_column_escaped} = ? WHERE {pkey_column_escaped} = ?""",
             (master_fid, -wp_fid),
         )
+
+    return new_master_fid

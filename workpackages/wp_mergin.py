@@ -238,7 +238,7 @@ def prepare_inputs(ctx: MerginWPContext) -> (WPConfig, set, str, list):
     return wp_config, wp_new, gpkg_path, master_project_files
 
 
-def push_mergin_project(mc, directory, max_retries=3, sleep_time=5):
+def push_mergin_project(mc, directory, max_retries=1, sleep_time=5):
     push_attempt = 1
     while True:
         try:
